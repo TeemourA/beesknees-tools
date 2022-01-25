@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import { Schema, Model, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -7,8 +7,24 @@ import { removePropertiesFromObject } from '../utils';
 import { appSalt } from '../constants/crypt';
 import { loginErrorMessage } from '../constants/errorMessages';
 
-const { Schema } = mongoose;
 const { isEmail } = validator;
+
+export interface UserToken {
+  token: string;
+  _id: string;
+}
+
+export interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  tokens: UserToken[];
+  generateAuthToken: () => string;
+}
+
+interface UserModel extends Model<IUser> {
+  findByCredentials: (email: string, password: string) => IUser;
+}
 
 const UserSchema = new Schema(
   {
@@ -96,4 +112,4 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-export const User = mongoose.model('User', UserSchema);
+export const User = model<IUser, UserModel>('User', UserSchema);
