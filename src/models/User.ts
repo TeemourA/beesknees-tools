@@ -1,4 +1,4 @@
-import { Schema, Model, model } from 'mongoose';
+import { Schema, Model, model, Document } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -14,7 +14,7 @@ export interface UserToken {
   _id: string;
 }
 
-export interface IUser {
+export interface IUser extends Document {
   name: string;
   email: string;
   password: string;

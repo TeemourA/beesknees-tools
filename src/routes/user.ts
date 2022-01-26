@@ -31,3 +31,16 @@ userRouter.post('/users/login', async (req, res) => {
       : res.status(400).send(err);
   }
 });
+
+userRouter.post('/users/logout', auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter(
+      ({ token }) => token !== req.token
+    );
+    await req.user.save();
+
+    res.status(200).send();
+  } catch (err) {
+    res.status(500).send();
+  }
+});
