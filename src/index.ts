@@ -9,6 +9,7 @@ const port = process.env.PORT;
 
 dbConnect();
 
+app.use(express.static('client/build'));
 app.use(express.json());
 app.use([userRouter, cardSetRouter]);
 
