@@ -24,7 +24,7 @@ userRouter.post('/users/login', async (req, res) => {
       req.body.password
     );
     const token = await user.generateAuthToken();
-    res.send({ user, token });
+    res.status(200).send({ user, token });
   } catch (err) {
     err instanceof Error
       ? res.status(400).send(err.message)
