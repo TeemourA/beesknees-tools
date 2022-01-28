@@ -70,8 +70,11 @@ const UserSchema = new Schema(
 UserSchema.methods.toJSON = function () {
   const user = this;
   const userWithoutSensetiveData = removePropertiesFromObject(user.toObject(), [
+    '__v',
     'password',
     'tokens',
+    'createdAt',
+    'updatedAt',
   ]);
 
   return userWithoutSensetiveData;

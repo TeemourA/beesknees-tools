@@ -1,29 +1,25 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import axios from 'axios';
 
+import axios from '../../api';
+import { getCurrentSessionToken } from '../../utils/api';
+import { createSessionAPI, terminateSessionAPI } from '../../api/session.api';
 import {
   createSessionRequest,
   createSessionSuccess,
   createSessionFailure,
+  terminateSessionRequest,
+  terminateSessionSuccess,
+  terminateSessionFailure,
 } from './session.slice';
 
-interface CreateSessionData {
-  email: string;
-  password: string;
-}
+import { SessionData, UserCredentials } from './session.types';
 
-const createSessionAPI = async (data: CreateSessionData) => {
-  const response = await axios.post('http://localhost:3000/users/login', data);
-
-  return response.data as { token: string };
-};
-
-function* createSessionRequestSaga(action: PayloadAction<CreateSessionData>) {
+function* createSessionRequestSaga(action: PayloadAction<UserCredentials>) {
   try {
     const data = action.payload;
 
-    const response: { token: string } = yield call(createSessionAPI, data);
+    const response: SessionData = yield call(createSessionAPI, data);
 
     yield put(createSessionSuccess(response));
   } catch (error) {
@@ -31,6 +27,22 @@ function* createSessionRequestSaga(action: PayloadAction<CreateSessionData>) {
   }
 }
 
+function* terminateSessionRequestSaga(
+  action: PayloadAction
+) {
+  try {
+    const data = action.payload;
+
+    axios.defaults.headers.common.Authorization = getCurrentSessionToken();
+    yield call(terminateSessionAPI, data);
+
+    yield put(terminateSessionSuccess());
+  } catch (error) {
+    yield put(terminateSessionFailure());
+  }
+}
+
 export function* watchSessionSaga() {
   yield takeLatest(createSessionRequest.type, createSessionRequestSaga);
+  yield takeLatest(terminateSessionRequest.type, terminateSessionRequestSaga);
 }

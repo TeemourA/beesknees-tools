@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { createSessionRequest } from '../../features/session/session.slice';
 import { useAppDispatch } from '../../redux/typedRedux';
