@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { createSessionRequest } from '../../features/session/session.slice';
+import { useAppDispatch } from '../../redux/typedRedux';
 
 import {
   LoginPageContainer,
@@ -13,6 +15,8 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
+  const dispatch = useAppDispatch();
+
   const handleEmailInputChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,15 +29,10 @@ const LoginPage: React.FC = () => {
     setPassword(value);
   };
 
-  const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    axios
-      .post('http://localhost:3000/users/login', {
-        email,
-        password,
-      })
-      .then((data) => console.log(data.data));
+    dispatch(createSessionRequest({ email, password }));
   };
 
   return (
