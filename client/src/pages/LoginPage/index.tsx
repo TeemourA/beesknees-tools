@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => {
     setPassword(value);
   };
 
-  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     dispatch(createSessionRequest({ email, password }));

@@ -2,8 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import { localStorageTokenName } from '../../constants';
 
 import { RequestStatuses } from '../../interface/network';
+import { SessionState } from './session.types';
 
-const initialState = {
+const initialState: SessionState = {
   user: null,
   token: localStorage.getItem(localStorageTokenName) || null,
   status: RequestStatuses.idle,

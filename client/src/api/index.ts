@@ -1,8 +1,10 @@
 import Axios from 'axios';
-import { getBaseUrl } from '../utils/api';
+import { getBaseUrl, getCurrentSessionToken } from '../utils/api';
 
 const axios = Axios.create({
   baseURL: getBaseUrl(),
 });
+
+axios.defaults.headers.common.Authorization = getCurrentSessionToken();
 
 export default axios;

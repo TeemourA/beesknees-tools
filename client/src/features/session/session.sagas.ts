@@ -21,6 +21,8 @@ function* createSessionRequestSaga(action: PayloadAction<UserCredentials>) {
 
     const response: SessionData = yield call(createSessionAPI, data);
 
+    axios.defaults.headers.common.Authorization = `Bearer ${response.token}`;
+    
     yield put(createSessionSuccess(response));
   } catch (error) {
     yield put(createSessionFailure());
@@ -33,7 +35,6 @@ function* terminateSessionRequestSaga(
   try {
     const data = action.payload;
 
-    axios.defaults.headers.common.Authorization = getCurrentSessionToken();
     yield call(terminateSessionAPI, data);
 
     yield put(terminateSessionSuccess());
