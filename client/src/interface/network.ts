@@ -1,6 +1,6 @@
 export enum RequestStatuses {
   idle = 'idle',
-  loading = 'loaded',
+  loading = 'loading',
   loaded = 'loaded',
   error = 'error',
 }

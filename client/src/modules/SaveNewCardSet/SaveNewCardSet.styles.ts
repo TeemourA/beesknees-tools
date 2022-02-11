@@ -2,9 +2,7 @@ import styled from 'styled-components';
 
 export const SaveNewCardSetForm = styled.form`
   display: grid;
-  margin: auto;
   grid-auto-columns: max-content;
-  grid-auto-rows: max-content;
 `;
 
 export const SaveNewCardSetInput = styled.input`

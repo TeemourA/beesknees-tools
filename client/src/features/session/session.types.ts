@@ -6,7 +6,7 @@ export interface UserCredentials {
 }
 
 export interface User extends UserCredentials {
-  __id: string;
+  _id: string;
 }
 
 export interface SessionData {

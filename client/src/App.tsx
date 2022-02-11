@@ -1,103 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import LoginPage from './pages/LoginPage';
+import React from 'react';
 import { useAppDispatch, useAppSelector } from './redux/typedRedux';
+
+import LoginPage from './pages/LoginPage';
+import SaveNewCardSet from './modules/SaveNewCardSet';
+import CardSetsSelectionList from './modules/CardSetsSelection';
+
 import { terminateSessionRequest } from './features/session/session.slice';
-import SaveNewCardSet from './components/SaveNewCardSet';
-import { fetchCardSetsRequest } from './features/cardSets/cardSets.slice';
-import { CardSet } from './features/cardSets/cardSets.types';
+import { sessionTokenSelector } from './features/session/session.selectors';
+import { AppContainer } from './App.styles';
+import HeaderLogo from './components/HeaderLogo';
 
 const App: React.FC = () => {
-  const [selectedCardSets, setSelectedCardSets] = useState<CardSet[]>([]);
-  const [message, setMessage] = useState<string>('');
-
-  const { token } = useAppSelector((state) => state.session);
-  const { cardSets } = useAppSelector((state) => state.cardSets);
+  const token = useAppSelector(sessionTokenSelector);
 
   const dispatch = useAppDispatch();
 
-  const handleLogout = () => {
-    dispatch(terminateSessionRequest());
-  };
-
-  const handleCardSetSelect = (cardSet: CardSet) => {
-    setSelectedCardSets((prevSelectedCardSets) => {
-      if (!prevSelectedCardSets.includes(cardSet))
-        return [...prevSelectedCardSets, cardSet];
-
-      return [
-        ...prevSelectedCardSets.filter(
-          (currentCardSet) => currentCardSet !== cardSet
-        ),
-      ];
-    });
-  };
-
-  const handleSelectAllCardSets = () =>
-    cardSets.forEach((set) => handleCardSetSelect(set));
-
-  useEffect(() => {
-    setMessage(
-      `${selectedCardSets
-        .map((selectedSet) => `${selectedSet.title}\n${selectedSet.url}\n\n`)
-        .join('')}`
-    );
-  }, [selectedCardSets]);
-
-  useEffect(() => {
-    if (token) dispatch(fetchCardSetsRequest());
-  }, [token]);
+  const handleLogout = () => dispatch(terminateSessionRequest());
 
   return (
     <div className="App">
       {!token ? (
         <LoginPage />
       ) : (
-        <>
-          <div>
-            You are logged in<button onClick={handleLogout}>log out</button>
+        <AppContainer>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '0 10px',
+              alignItems: 'center',
+            }}
+          >
+            <HeaderLogo />
+            <button onClick={handleLogout}>Logout</button>
           </div>
-          <div style={{ marginTop: '30px' }}>
-            <SaveNewCardSet />
-          </div>
-          {!cardSets.length ? (
-            <p>no card sets</p>
-          ) : (
-            <ul style={{ marginTop: '30px' }}>
-              <button onClick={() => handleSelectAllCardSets()}>
-                Select all
-              </button>
-              {cardSets.map((set) => (
-                <li
-                  style={{ listStyle: 'none', marginTop: '15px' }}
-                  key={set.__id}
-                >
-                  <label>
-                    <input
-                      type="checkbox"
-                      onChange={() => handleCardSetSelect(set)}
-                      checked={selectedCardSets.includes(set)}
-                    />
-                    <a href={set.url} rel="noreferrer" target="_blank">
-                      {set.title}
-                    </a>
-                  </label>
-                </li>
-              ))}
-            </ul>
-          )}
-          {!selectedCardSets.length ? (
-            <p>no selected card sets</p>
-          ) : (
-            <>
-              <textarea cols={40} rows={10} value={message} />
-              <button
-                onClick={() => navigator.clipboard.writeText(message.trim())}
-              >
-                Copy to clipboard
-              </button>
-            </>
-          )}
-        </>
+          <SaveNewCardSet />
+          <CardSetsSelectionList />
+        </AppContainer>
       )}
     </div>
   );

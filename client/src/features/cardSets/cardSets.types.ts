@@ -6,10 +6,10 @@ export interface CardSetData {
 }
 
 export interface CardSet extends CardSetData {
-  __id: string;
+  _id: string;
 }
 
 export interface CardSetsState {
   cardSets: CardSet[];
-  status: RequestStatuses;
+  status: RequestStatuses | string;
 }
